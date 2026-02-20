@@ -191,13 +191,13 @@ app.UseSwaggerUI(c =>
 
 
 // loggers config
-app.Logger.LogDebug("debug-message");
-app.Logger.LogError("error-message");
-app.Logger.LogInformation("information-message");
-app.Logger.LogCritical("information-message");
-app.Logger.LogWarning("warning-message");
-app.Logger.LogCritical("critical-message");
-app.Logger.LogDebug("debug-message");
+// app.Logger.LogDebug("debug-message");
+// app.Logger.LogError("error-message");
+// app.Logger.LogInformation("information-message");
+// app.Logger.LogCritical("information-message");
+// app.Logger.LogWarning("warning-message");
+// app.Logger.LogCritical("critical-message");
+// app.Logger.LogDebug("debug-message");
 app.UseIpRateLimiting();
 
 app.UseCors("AllowSpecificOrigin");
