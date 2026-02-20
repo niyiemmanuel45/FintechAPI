@@ -198,6 +198,16 @@ app.Logger.LogCritical("information-message");
 app.Logger.LogWarning("warning-message");
 app.Logger.LogCritical("critical-message");
 app.Logger.LogDebug("debug-message");
+app.UseIpRateLimiting();
+
+app.UseCors("AllowSpecificOrigin");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
 
 
 app.UseHttpsRedirection();
