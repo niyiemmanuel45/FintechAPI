@@ -67,7 +67,8 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter your valid token to be Authenticated.",
         Reference = new OpenApiReference
         {
-            Id = JwtBearerDefaults.AuthenticationScheme, Type = ReferenceType.SecurityScheme
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
         }
     };
 
@@ -77,9 +78,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         { jwtSecurityScheme, Array.Empty<string>() }
     });
-});
-builder.Services.AddSwaggerGen(options =>
-{
+
     options.SchemaFilter<EnumSchemaFilter>();
     options.EnableAnnotations();
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -92,7 +91,6 @@ builder.Services.AddSwaggerGen(options =>
     {
         Console.WriteLine($"Warning: XML documentation file not found at {xmlPath}");
     }
-
 });
 
 // Database and Identity
@@ -176,22 +174,19 @@ builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection(
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 builder.Services.AddInMemoryRateLimiting();
 var app = builder.Build();
+// Configure the HTTP request pipeline.
+// Show detailed exception page in development environment.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"Request Path: {context.Request.Path}");
-    await next();
-});
-// Enable Swagger in all environments
+// Enable Swagger in all environments for API documentation.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    c.RoutePrefix = string.Empty;
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fintech API V1");
+    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
 });
 
 // loggers config
