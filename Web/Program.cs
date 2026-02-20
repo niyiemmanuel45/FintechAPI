@@ -185,9 +185,10 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fintech API V1");
-    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-});
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = "swagger";
+});// Set Swagger UI at the app's root
+
 
 // loggers config
 app.Logger.LogDebug("debug-message");
