@@ -1,0 +1,267 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Web</name>
+    </assembly>
+    <members>
+        <member name="M:Web.Controllers.AccountController.RegisterNewUser(Application.DTOs.RegisterUserDto)">
+            <summary>
+            Register a new account. This is the first step to create a user profile.
+            </summary>
+            <param name="userDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountController.ConfirmEmail(System.String,System.String)">
+            <summary>
+            Confirm your email address by clicking the link sent to your email. This endpoint is typically not used manually.
+            </summary>
+            <param name="email"></param>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountController.LoginUser(Application.DTOs.LoginDto)">
+            <summary>
+            Authenticate and log in to your account. Requires a registered and confirmed email address.
+            </summary>
+            <param name="userLoginDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountController.VerifyTwoFactorCode(Application.DTOs.TwoFactorVerificationDto)">
+            <summary>
+            Verify your identity by submitting the two-factor authentication (2FA) code received after login.
+            </summary>
+            <param name="verificationDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountSettingsController.DisableNotifications">
+            <summary>
+            Disable notifications for your account movements.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountSettingsController.EnableNotifications">
+            <summary>
+            Enable notifications for your account movements.
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Web.Controllers.AccountSettingsController.RequestResetPassword(Application.DTOs.EmailDto)">
+            <summary>
+            Request a password reset. This can be if you are not logged in.
+            </summary>
+            <param name="emailDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountSettingsController.ResetPassword(Application.DTOs.ResetPasswordDto)">
+            <summary>
+            Reset your password using the token received via email.
+            </summary>
+            <param name="passwordDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.AccountSettingsController.UpdatePassword(Application.DTOs.UpdatePasswordDto)">
+            <summary>
+            Update your account password. Requires authentication.
+            </summary>
+            <param name="_updatePasswordDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.BankAccountController.CreateBankAccount">
+            <summary>
+            Create a new bank account linked to your profile.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.BankAccountController.GetBankAccountDetails">
+            <summary>
+            Retrieve details of your linked bank account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.BankAccountController.ChangeCurrency(Application.DTOs.CurrencySymbolDto)">
+            <summary>
+            Update the currency associated with your bank account.
+            </summary>
+            <param name="currencySymbolDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CardsController.CreateBankCard(Application.DTOs.CardTypeDto)">
+            <summary>
+            Create a new card linked to your account. This allows you to manage transactions and balances.
+            </summary>
+            <param name="cardTypeDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CardsController.ChangeCurrency(Application.DTOs.ChangeCurrencyCardDto)">
+            <summary>
+            Update the currency associated with a specific card. This changes the currency in which the card operates.
+            </summary>
+            <param name="currencyCardDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CardsController.GetAllCards">
+            <summary>
+            Retrieve detailed information about all the cards linked to your account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CardsController.DeleteCard(System.Int32)">
+            <summary>
+            Delete an existing card from your account. This will remove the card and its associated details.
+            </summary>
+            <param name="cardId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CurrencyController.GetExchangeRate(System.String,System.String)">
+            <summary>
+            Retrieve the current exchange rate between two currencies.
+            </summary>
+            <param name="baseCurrency"></param>
+            <param name="targetCurrency"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CurrencyController.CardToCardExchangeMoney(Application.DTOs.ExchangeMoneyDtoCardToCard)">
+            <summary>
+            Exchange balance between two of your linked cards.
+            </summary>
+            <param name="dtoCardToCard"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CurrencyController.BankToCardExchangeMoney(Application.DTOs.ExchangeMoneyDtoBankAndCard)">
+            <summary>
+            Exchange balance from your bank account to a linked cards.
+            </summary>
+            <param name="exchangeDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CurrencyController.CardToBankExchangeMoney(Application.DTOs.ExchangeMoneyDtoBankAndCard)">
+            <summary>
+            Exchange balance from any of your cards to your bank account.
+            </summary>
+            <param name="exchangeDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.CurrencyController.GetHistoricalExchangeRate(System.String,System.String,System.String)">
+            <summary>
+            Retrieve historical exchange rates for a specified currency.
+            </summary>
+            <param name="baseCurrency"></param>
+            <param name="targetCurrency"></param>
+            <param name="timeSeries"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.ExcelController.GetBankStatements(System.Int32,System.Boolean)">
+            <summary>
+            Get all your account movements documented as excel format through your email address.
+            </summary>
+            <param name="periodAsMonth"></param>
+            <param name="sendEmil"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.PaymentsController.CreatePaymentIntentAsync(Application.DTOs.ChargeRequestDto)">
+            <summary>
+            Add balance to your bank account balance. This could be used for deposits.
+            </summary>
+            <param name="chargeRequestDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.PaymentsController.ConfirmPayment(Application.DTOs.ConfirmRequestDto)">
+            <summary>
+            Confirm a payment using the code received from the charge endpoint.
+            </summary>
+            <param name="confirmRequestDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.PaymentsController.TransferToCard(Application.DTOs.InternalTransactionDto)">
+            <summary>
+            Transfer funds from your bank account to any of your linked cards.
+            </summary>
+            <param name="cardDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.PaymentsController.TransferToAccount(Application.DTOs.InternalTransactionDto)">
+            <summary>
+            Transfer funds from any of your linked cards to your bank account.
+            </summary>
+            <param name="transactionDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StatementsController.GetAllOperations">
+            <summary>
+            Retrieve a complete history of operations and transactions for your account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StatementsController.GetTransactions">
+            <summary>
+            Retrieve a list of transactions associated with your account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StatementsController.GetStockLogs">
+            <summary>
+            Retrieve all stock-related movements for your account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StatementsController.GetExchangeLogs">
+            <summary>
+            Retrieve all currency exchange movements for your account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.GetOwnedStocks">
+            <summary>
+            Retrieve a list of all stocks owned by your account.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.BuyStock(Application.DTOs.BuySellStockDto)">
+            <summary>
+            Purchase stocks at current real-time market price
+            </summary>
+            <param name="sellStockDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.SellStock(Application.DTOs.BuySellStockDto)">
+            <summary>
+            Sell stocks at current real-time market price
+            </summary>
+            <param name="sellStockDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.GetStockLivePrice(Application.DTOs.CurrencySymbolDto)">
+            <summary>
+            Retrieve the real-time price of stocks available on American markets.
+            </summary>
+            <param name="currencySymbolDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.GetStockPrices(Application.DTOs.StockPricesDto)">
+            <summary>
+            Retrieve historical stock prices at specified intervals (1, 5, 15, 30, or 60 minutes).
+            </summary>
+            <param name="stockPricesDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.GetTopGainers">
+            <summary>
+            Retrieve a list of the top-performing stocks on American markets.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.GetTopLosers">
+            <summary>
+            Retrieve a list of the stocks with the highest losses on American markets.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Web.Controllers.StocksController.GetMostActively">
+            <summary>
+            Retrieve a list of the most actively traded stocks on American markets.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
