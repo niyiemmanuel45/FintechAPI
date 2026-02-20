@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "s8g8rYbKzfA=",
+  "dgSpecHash": "QwnL1902KK4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Adapters\\Adapters.csproj",
+  "projectFilePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Adapters\\Adapters.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BOUNDLESS IT\\.nuget\\packages\\closedxml\\0.104.2\\closedxml.0.104.2.nupkg.sha512",
     "C:\\Users\\BOUNDLESS IT\\.nuget\\packages\\closedxml.parser\\1.2.0\\closedxml.parser.1.2.0.nupkg.sha512",

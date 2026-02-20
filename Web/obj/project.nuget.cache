@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UYl6gIl+EUo=",
+  "dgSpecHash": "PcWX/2t9qsI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+  "projectFilePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BOUNDLESS IT\\.nuget\\packages\\aspnetcoreratelimit\\5.0.0\\aspnetcoreratelimit.5.0.0.nupkg.sha512",
     "C:\\Users\\BOUNDLESS IT\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
@@ -132,9 +132,9 @@
       "code": "NU1701",
       "level": "Warning",
       "message": "Package 'Mailgun.NET 0.1.16' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+      "projectPath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+      "filePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
       "libraryId": "Mailgun.NET",
       "targetGraphs": [
         "net8.0"
@@ -144,9 +144,9 @@
       "code": "NU1701",
       "level": "Warning",
       "message": "Package 'Microsoft.Bcl 1.1.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+      "projectPath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+      "filePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
       "libraryId": "Microsoft.Bcl",
       "targetGraphs": [
         "net8.0"
@@ -156,9 +156,9 @@
       "code": "NU1701",
       "level": "Warning",
       "message": "Package 'Microsoft.Net.Http 2.2.29' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+      "projectPath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Web\\Web.csproj",
+      "filePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Web\\Web.csproj",
       "libraryId": "Microsoft.Net.Http",
       "targetGraphs": [
         "net8.0"

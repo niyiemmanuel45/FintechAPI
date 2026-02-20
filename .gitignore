@@ -1,0 +1,25 @@
+## Build
+bin/
+obj/
+
+## Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Logs
+*.log
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Environment / secrets
+appsettings.Development.json
+appsettings.Local.json
+
+## Node (if you have Angular/React later)
+node_modules/

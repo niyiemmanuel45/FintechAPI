@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nQ5C0r4oKJs=",
+  "dgSpecHash": "FbGKKke1BLk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\SecureBankingAPI-master\\Core\\Core.csproj",
+  "projectFilePath": "C:\\Users\\BOUNDLESS IT\\Videos\\Fintech\\FintechAPI-master\\Core\\Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BOUNDLESS IT\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\BOUNDLESS IT\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
