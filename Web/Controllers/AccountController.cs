@@ -343,8 +343,12 @@ public class AccountController : ControllerBase
                 userName, code, expirationTimeInMinutes);
             await _emailService.ForceSendEmailAsync(user, "Two-Factor auth code", body);
             
-            return Unauthorized(
-                new { status = StatusCode(401), Message = "2FA code sent to your email address." });
+            return Ok(new 
+            { 
+                Message = "2FA code sent to your email address. Please check your email and use the code to complete login.",
+                Email = user.Email,
+                ExpiresInMinutes = expirationTimeInMinutes
+            });
         }
         catch (Exception ex)
         {
@@ -356,6 +360,8 @@ public class AccountController : ControllerBase
             { 
                 Message = "Login successful, but there was an issue sending the 2FA code.",
                 Code = code,
+                Email = user.Email,
+                ExpiresInMinutes = expirationTimeInMinutes,
                 Note = "Please use this code to complete your login. Contact support if you continue to have issues."
             });
         }
