@@ -12,22 +12,29 @@ using Core.Interfaces.IRepositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
     public class WebhookProcessingService : IWebhookProcessingService
     {
-        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly ApplicationDbContext _db;
         private readonly ILogger<WebhookProcessingService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IServiceProvider _serviceProvider;
         private readonly Dictionary<string, IWebhookHandler> _webhookHandlers;
 
-        public WebhookProcessingService(IDbContextFactory<ApplicationDbContext> dbContextFactory, ILogger<WebhookProcessingService> logger, IConfiguration configuration)
+        public WebhookProcessingService(
+            ApplicationDbContext db, 
+            ILogger<WebhookProcessingService> logger, 
+            IConfiguration configuration,
+            IServiceProvider serviceProvider)
         {
-            _dbContextFactory = dbContextFactory;
+            _db = db;
             _logger = logger;
             _configuration = configuration;
+            _serviceProvider = serviceProvider;
             _webhookHandlers = new Dictionary<string, IWebhookHandler>
             {
                 { "remita", new RemitaWebhookHandler() },
@@ -37,7 +44,6 @@ namespace Application.Services
 
         public async Task<bool> ProcessWebhookAsync(string payload, string signature, string provider)
         {
-            await using var db = await _dbContextFactory.CreateDbContextAsync();
 
             if (!_webhookHandlers.TryGetValue(provider.ToLower(), out var handler))
             {
@@ -58,7 +64,7 @@ namespace Application.Services
                 return false;
             }
 
-            var isEventProcessed = await db.WebhookEvents.AnyAsync(e => e.ProviderEventId == providerEventId && e.Provider == provider);
+            var isEventProcessed = await _db.WebhookEvents.AnyAsync(e => e.ProviderEventId == providerEventId && e.Provider == provider);
             if (isEventProcessed)
             {
                 _logger.LogWarning("Webhook event {ProviderEventId} from {Provider} has already been processed.", providerEventId, provider);
@@ -75,8 +81,8 @@ namespace Application.Services
                 Status = "Pending",
                 ReceivedAt = DateTime.UtcNow
             };
-            db.WebhookEvents.Add(webhookEvent);
-            await db.SaveChangesAsync();
+            _db.WebhookEvents.Add(webhookEvent);
+            await _db.SaveChangesAsync();
 
             _ = Task.Run(() => ProcessEvent(webhookEvent.WebhookEventId));
 
@@ -103,7 +109,9 @@ namespace Application.Services
 
         private async Task ProcessEvent(long webhookEventId)
         {
-            await using var db = await _dbContextFactory.CreateDbContextAsync();
+            using var scope = _serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            
             var webhookEvent = await db.WebhookEvents.FindAsync(webhookEventId);
             if (webhookEvent == null)
             {
@@ -173,11 +181,12 @@ namespace Application.Services
                 _logger.LogError(ex, "Error processing webhook event {WebhookEventId}", webhookEventId);
 
                 // Save failure status outside of the transaction
-                await using var updateDbContext = await _dbContextFactory.CreateDbContextAsync();
-                updateDbContext.WebhookEvents.Attach(webhookEvent);
-                updateDbContext.Entry(webhookEvent).Property(e => e.Status).IsModified = true;
-                updateDbContext.Entry(webhookEvent).Property(e => e.LastError).IsModified = true;
-                await updateDbContext.SaveChangesAsync();
+                using var updateScope = _serviceProvider.CreateScope();
+                var updateDb = updateScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                updateDb.WebhookEvents.Attach(webhookEvent);
+                updateDb.Entry(webhookEvent).Property(e => e.Status).IsModified = true;
+                updateDb.Entry(webhookEvent).Property(e => e.LastError).IsModified = true;
+                await updateDb.SaveChangesAsync();
             }
         }
 
