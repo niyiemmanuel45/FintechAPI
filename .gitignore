@@ -20,6 +20,9 @@ Thumbs.db
 ## Environment / secrets
 appsettings.Development.json
 appsettings.Local.json
+SecureData.json
+appsettings.Production.json
+*.secrets.json
 
 ## Node (if you have Angular/React later)
 node_modules/
