@@ -58,51 +58,47 @@ builder.Services.AddCors(options =>
 
 
 // Swagger/OpenAPI
-//builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen(options =>
-// {
-//     var jwtSecurityScheme = new OpenApiSecurityScheme
-//     {
-//         BearerFormat = "JWT",
-//         Name = "Authorization",
-//         In = ParameterLocation.Header,
-//         Type = SecuritySchemeType.Http,
-//         Scheme = JwtBearerDefaults.AuthenticationScheme,
-//         Description = "Enter your valid token to be Authenticated.",
-//         Reference = new OpenApiReference
-//         {
-//             Id = JwtBearerDefaults.AuthenticationScheme,
-//             Type = ReferenceType.SecurityScheme
-//         }
-//     };
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        BearerFormat = "JWT",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "Enter your valid token to be Authenticated.",
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
 
-//     options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+    options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
 
-//     options.AddSecurityRequirement(new OpenApiSecurityRequirement
-//     {
-//         { jwtSecurityScheme, Array.Empty<string>() }
-//     });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
 
-//     options.SchemaFilter<EnumSchemaFilter>();
-//     options.EnableAnnotations();
-//     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-//     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-//     if (File.Exists(xmlPath))
-//     {
-//         options.IncludeXmlComments(xmlPath);
-//     }
-//     else
-//     {
-//         Console.WriteLine($"Warning: XML documentation file not found at {xmlPath}");
-//     }
-// });
+    options.SchemaFilter<EnumSchemaFilter>();
+    options.EnableAnnotations();
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+    else
+    {
+        Console.WriteLine($"Warning: XML documentation file not found at {xmlPath}");
+    }
+});
 
 // Database and Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Remote")));
-
-// Add DbContext factory for background services
-builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Remote")));
 
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<ApplicationDbContext>()

@@ -2,6 +2,11 @@
   "ConnectionStrings": {
     "Remote": "Server=db42073.public.databaseasp.net;Database=db42073;User Id=db42073;Password=9h+KT7d?2-Xx;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;"
   },
+  "Jwt": {
+    "KEY": "YourSuperSecretJwtKeyThatIsAtLeast32CharactersLongForHS256Algorithm",
+    "ISSUER": "FintechAPI",
+    "AUDIENCE": "FintechAPIUsers"
+  },
   "Stripe": {
     "SecretKey": "Your_Stripe_Secret_Key_Here"
   },
@@ -9,5 +14,4 @@
     "stripe": "your_stripe_webhook_secret",
     "paystack": "your_paystack_webhook_secret"
   }
-
 }
