@@ -47,6 +47,14 @@ builder.Services.AddControllers().AddJsonOptions(o =>
 // Configure FluentEmail with Mailgun sender (uses settings from configuration)
 builder.Services.AddFluentEmail(builder.Configuration["Mailgun:SenderEmail"]);
 
+// Configure HttpClient for Brevo API
+builder.Services.AddHttpClient("BrevoApi", client =>
+{
+    client.BaseAddress = new Uri("https://api.brevo.com/v3/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",

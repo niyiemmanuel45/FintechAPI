@@ -104,17 +104,55 @@ public class AccountController : ControllerBase
 
         // Register User using UserManager
         var registrationResult = await _userManager.CreateAsync(user, userDto.Password);
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        
+        if (!registrationResult.Succeeded)
+        {
+            var errors = string.Join(", ", registrationResult.Errors.Select(e => e.Description));
+            return BadRequest(new { Message = "Registration failed.", Errors = errors });
+        }
 
-        var confirmationLink = Url.Action("ConfirmEmail", "Account",
-            new { Email = userDto.Email, token = token }, Request.Scheme);
-        Console.WriteLine(token);
-        var userName = $"{user.FirstName} {user.LastName}";
-        var body = _emailBodyBuilder.EmailConfirmationHtmlResponse("Confirm your email", userName,
-            confirmationLink);
-        await _emailService.ForceSendEmailAsync(user, "Confirm your email", body);
-
-        return Ok(new { message = "Registration successful. Please check your email for confirmation." });
+        try
+        {
+            // Generate email confirmation token
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            
+            // Encode the token for URL safety
+            var encodedToken = HttpUtility.UrlEncode(token);
+            
+            // Create confirmation link
+            var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                new { email = userDto.Email, token = encodedToken }, Request.Scheme);
+            
+            // Build email body
+            var userName = $"{user.FirstName} {user.LastName}";
+            var body = _emailBodyBuilder.EmailConfirmationHtmlResponse(
+                "Welcome to FintechAPI - Confirm Your Email", 
+                userName,
+                confirmationLink);
+            
+            // Send verification email
+            await _emailService.ForceSendEmailAsync(user, "Confirm Your Email Address", body);
+            
+            return Ok(new 
+            { 
+                Message = "Registration successful! A verification email has been sent to your email address.",
+                Email = userDto.Email,
+                Note = "Please check your email and click the confirmation link to activate your account."
+            });
+        }
+        catch (Exception ex)
+        {
+            // Log the error but don't expose details to the user
+            Console.WriteLine($"Error sending verification email: {ex.Message}");
+            
+            // Still return success since user was created
+            return Ok(new 
+            { 
+                Message = "Registration successful, but there was an issue sending the verification email.",
+                Email = userDto.Email,
+                Note = "Please contact support if you don't receive the verification email."
+            });
+        }
     }
 
     /// <summary>
@@ -126,30 +164,125 @@ public class AccountController : ControllerBase
     [HttpGet("email/confirm")]
     public async Task<IActionResult> ConfirmEmail(string email, string token)
     {
-        if (email == null || token == null)
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
         {
-            return BadRequest("Invalid email confirmation request.");
+            return BadRequest(new { Message = "Invalid email confirmation request. Email and token are required." });
         }
 
-        var user = await _userManager.FindByNameAsync(email);
+        // Try to find user by email first, then by username
+        var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            return BadRequest("User not found.");
+            user = await _userManager.FindByNameAsync(email);
+        }
+        
+        if (user == null)
+        {
+            return BadRequest(new { 
+                Message = "User not found.", 
+                Email = email,
+                Note = "Please ensure you're using the correct email address from the verification link."
+            });
         }
 
         if (user.EmailConfirmed)
         {
-            return BadRequest("Your email has been confirmed before.");
+            return Ok(new { 
+                Message = $"Welcome back! Your email has already been confirmed.", 
+                Email = user.Email,
+                Note = "You can now log in to your account."
+            });
         }
 
-        var result = await _userManager.ConfirmEmailAsync(user, token);
+        // Decode the token if it was URL encoded
+        var decodedToken = HttpUtility.UrlDecode(token);
+        
+        var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
         if (result.Succeeded)
         {
-            return Ok("Email confirmed successfully.");
+            return Ok(new 
+            { 
+                Message = $"Welcome to FintechAPI! Your email has been confirmed successfully!",
+                Email = user.Email,
+                Name = $"{user.FirstName} {user.LastName}",
+                Note = "You can now log in to your account and start using our services."
+            });
         }
 
-        return BadRequest("Error confirming email.");
+        var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+        return BadRequest(new 
+        { 
+            Message = "Error confirming email.", 
+            Errors = errors,
+            Note = "The confirmation link may have expired. Please request a new confirmation email."
+        });
+    }
+
+    /// <summary>
+    /// Resend email verification link if you didn't receive it or if it expired.
+    /// </summary>
+    /// <param name="emailDto"></param>
+    /// <returns></returns>
+    [HttpPost("email/resend-confirmation")]
+    public async Task<IActionResult> ResendEmailConfirmation([FromBody] EmailDto emailDto)
+    {
+        if (string.IsNullOrEmpty(emailDto?.Email))
+        {
+            return BadRequest(new { Message = "Email address is required." });
+        }
+
+        var user = await _userManager.FindByEmailAsync(emailDto.Email);
+        if (user == null)
+        {
+            // Don't reveal that the user doesn't exist for security reasons
+            return Ok(new 
+            { 
+                Message = "If an account with that email exists and is not confirmed, a verification email has been sent."
+            });
+        }
+
+        if (user.EmailConfirmed)
+        {
+            return BadRequest(new { Message = "This email address is already confirmed." });
+        }
+
+        try
+        {
+            // Generate new email confirmation token
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            
+            // Encode the token for URL safety
+            var encodedToken = HttpUtility.UrlEncode(token);
+            
+            // Create confirmation link
+            var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                new { email = emailDto.Email, token = encodedToken }, Request.Scheme);
+            
+            // Build email body
+            var userName = $"{user.FirstName} {user.LastName}";
+            var body = _emailBodyBuilder.EmailConfirmationHtmlResponse(
+                "Email Verification - FintechAPI", 
+                userName,
+                confirmationLink);
+            
+            // Send verification email
+            await _emailService.ForceSendEmailAsync(user, "Confirm Your Email Address", body);
+            
+            return Ok(new 
+            { 
+                Message = "Verification email has been resent. Please check your email.",
+                Email = emailDto.Email
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error resending verification email: {ex.Message}");
+            return StatusCode(500, new 
+            { 
+                Message = "An error occurred while sending the verification email. Please try again later."
+            });
+        }
     }
 
     /// <summary>
