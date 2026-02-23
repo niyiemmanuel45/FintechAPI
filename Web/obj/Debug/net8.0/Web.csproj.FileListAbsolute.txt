@@ -176,7 +176,6 @@ C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Docu
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\ExcelNumberFormat.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Humanizer.dll
-C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Mailgun.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
@@ -200,8 +199,6 @@ C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Micr
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
-C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\System.Net.Http.Extensions.dll
-C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\System.Net.Http.Primitives.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.OpenApi.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\Mono.TextTemplating.dll
@@ -316,3 +313,6 @@ C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\refi
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\Web.pdb
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\Web.genruntimeconfig.cache
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\ref\Web.dll
+C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\swae.build.ex.cache
+C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\FluentEmail.Core.dll
+C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\FluentEmail.Mailgun.dll

@@ -1,9 +1,13 @@
 {
   "ConnectionStrings": {
-    "Default": "Server=DESKTOP-MIH6MCJ;Database=SecurePayment;User Id=papercut; Password=Oluniyi;Trusted_Connection=True;TrustServerCertificate=True;",
     "Remote": "Server=db42073.public.databaseasp.net;Database=db42073;User Id=db42073;Password=9h+KT7d?2-Xx;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;"
   },
   "Stripe": {
     "SecretKey": "Your_Stripe_Secret_Key_Here"
+  },
+  "WebhookSecrets": {
+    "stripe": "your_stripe_webhook_secret",
+    "paystack": "your_paystack_webhook_secret"
   }
+
 }

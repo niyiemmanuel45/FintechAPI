@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using FluentEmail.Core;
 
 namespace Application.Services;
 
@@ -18,16 +19,16 @@ public class EmailService : IEmailService
     private readonly string _senderEmail;
     private readonly UserManager<User> _userManager;
 
-    private readonly HttpClient _httpClient;
+    private readonly IFluentEmailFactory _fluentFactory;
 
-    public EmailService(UserManager<User> userManager,IConfiguration configuration)
+    public EmailService(UserManager<User> userManager, IConfiguration configuration, IFluentEmailFactory fluentFactory)
     {
         _mailGunDomain = configuration["Mailgun:Domain"];
         _mailGunApiKey = configuration["Mailgun:ApiKey"];
         _mailGunSenderEmail = configuration["Mailgun:SenderEmail"];
         _apiKey = configuration["SendGrid:ApiKey"];
         _senderEmail = configuration["SendGrid:SenderEmail"];
-        _httpClient = new HttpClient();
+        _fluentFactory = fluentFactory;
         _userManager = userManager;
     }
 
@@ -38,29 +39,16 @@ public class EmailService : IEmailService
             return;
         }
 
-        var url = $"https://api.mailgun.net/v3/{_mailGunDomain}/messages";
+        var email = _fluentFactory.Create()
+            .To(user.Email)
+            .Subject(subject)
+            .Body(body, isHtml: true);
 
-        var request = new HttpRequestMessage(HttpMethod.Post, url)
+        var result = await email.SendAsync();
+        if (!result.Successful)
         {
-            Headers
-                =
-                {
-                    {
-                        "Authorization",
-                        "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{_mailGunApiKey}"))
-                    }
-                },
-            Content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("from", _mailGunSenderEmail),
-                new KeyValuePair<string, string>("to", user.Email),
-                new KeyValuePair<string, string>("subject", subject),
-                new KeyValuePair<string, string>("html", body)
-            })
-        };
-
-        var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
+            Console.WriteLine($"FluentEmail failed: {string.Join(';', result.ErrorMessages ?? new string[0])}");
+        }
     }
 
     public async Task SendEmailAsync(User user, string subject, string htmlContent)

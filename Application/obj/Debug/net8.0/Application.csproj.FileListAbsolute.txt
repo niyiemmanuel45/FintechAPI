@@ -33,3 +33,5 @@ C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Application\obj\Debug\net
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Application\obj\Debug\net8.0\Application.pdb
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Application\obj\Debug\net8.0\Application.genruntimeconfig.cache
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Application\obj\Debug\net8.0\ref\Application.dll
+C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Application\bin\Debug\net8.0\Infrastructure.dll
+C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Application\bin\Debug\net8.0\Infrastructure.pdb

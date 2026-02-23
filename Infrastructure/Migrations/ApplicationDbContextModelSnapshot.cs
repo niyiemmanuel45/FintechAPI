@@ -39,7 +39,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Currency")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(2);
 
                     b.Property<int>("NationalId")
                         .HasColumnType("int");
@@ -79,7 +79,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Currency")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(2);
 
                     b.Property<int>("Cvv")
                         .HasColumnType("int");
@@ -101,6 +101,63 @@ namespace Infrastructure.Migrations
                     b.HasIndex("AccountNumber");
 
                     b.ToTable("Cards");
+                });
+
+            modelBuilder.Entity("Core.Entities.IdempotencyKey", b =>
+                {
+                    b.Property<long>("IdempotencyKeyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdempotencyKeyId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdempotencyKeyValue")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("RequestHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponseData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponseHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("IdempotencyKeyId");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("IdempotencyKeyValue")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "IdempotencyKeyValue")
+                        .IsUnique()
+                        .HasDatabaseName("UQ_UserId_IdempotencyKeyValue");
+
+                    b.ToTable("IdempotencyKeys");
                 });
 
             modelBuilder.Entity("Core.Entities.Operation", b =>
@@ -169,6 +226,153 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PaymentId");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("Core.Entities.PaymentProvider", b =>
+                {
+                    b.Property<int>("ProviderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProviderId"));
+
+                    b.Property<string>("ApiKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Gateway")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WebhookSecret")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProviderId");
+
+                    b.ToTable("PaymentProviders");
+                });
+
+            modelBuilder.Entity("Core.Entities.PaymentStateHistory", b =>
+                {
+                    b.Property<long>("StateHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("StateHistoryId"));
+
+                    b.Property<int>("FromState")
+                        .HasColumnType("int");
+
+                    b.Property<long>("PaymentTransactionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ToState")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TransitionedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TransitionedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("StateHistoryId");
+
+                    b.HasIndex("PaymentTransactionId");
+
+                    b.ToTable("PaymentStateHistory");
+                });
+
+            modelBuilder.Entity("Core.Entities.PaymentTransaction", b =>
+                {
+                    b.Property<long>("PaymentTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PaymentTransactionId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("BankAccountId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentState")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("IdempotencyKeyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PreviousState")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Provider")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProviderConfirmedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProviderResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderTransactionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TransactionNumber")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PaymentTransactionId");
+
+                    b.HasIndex("CurrentState");
+
+                    b.HasIndex("ProviderTransactionId");
+
+                    b.HasIndex("TransactionNumber")
+                        .IsUnique();
+
+                    b.HasIndex("Provider", "CreatedAt");
+
+                    b.HasIndex("UserId", "CreatedAt");
+
+                    b.ToTable("PaymentTransactions");
                 });
 
             modelBuilder.Entity("Core.Entities.ReceiverClient", b =>
@@ -354,6 +558,65 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Core.Entities.WebhookEvent", b =>
+                {
+                    b.Property<long>("WebhookEventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("WebhookEventId"));
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("NextRetryAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ProviderEventId")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("ReceivedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Signature")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("WebhookEventId");
+
+                    b.HasIndex("ProviderEventId")
+                        .IsUnique();
+
+                    b.HasIndex("Status", "NextRetryAt");
+
+                    b.ToTable("WebhookEvents");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -494,6 +757,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Card");
                 });
 
+            modelBuilder.Entity("Core.Entities.PaymentStateHistory", b =>
+                {
+                    b.HasOne("Core.Entities.PaymentTransaction", "PaymentTransaction")
+                        .WithMany("StateHistory")
+                        .HasForeignKey("PaymentTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaymentTransaction");
+                });
+
             modelBuilder.Entity("Core.Entities.ReceiverClient", b =>
                 {
                     b.HasOne("Core.Entities.Operation", "Operation")
@@ -584,6 +858,11 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("Receiver")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.PaymentTransaction", b =>
+                {
+                    b.Navigation("StateHistory");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>

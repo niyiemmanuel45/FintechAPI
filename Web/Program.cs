@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
 using Stripe.BillingPortal;
+using FluentEmail.Mailgun;
 using BankAccountService = Application.Services.BankAccountService;
 using File = System.IO.File;
 
@@ -43,6 +44,9 @@ builder.Services.AddControllers().AddJsonOptions(o =>
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 });
 
+// Configure FluentEmail with Mailgun sender (uses settings from configuration)
+builder.Services.AddFluentEmail(builder.Configuration["Mailgun:SenderEmail"]);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -54,48 +58,52 @@ builder.Services.AddCors(options =>
 
 
 // Swagger/OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    var jwtSecurityScheme = new OpenApiSecurityScheme
-    {
-        BearerFormat = "JWT",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = JwtBearerDefaults.AuthenticationScheme,
-        Description = "Enter your valid token to be Authenticated.",
-        Reference = new OpenApiReference
-        {
-            Id = JwtBearerDefaults.AuthenticationScheme,
-            Type = ReferenceType.SecurityScheme
-        }
-    };
+//builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen(options =>
+// {
+//     var jwtSecurityScheme = new OpenApiSecurityScheme
+//     {
+//         BearerFormat = "JWT",
+//         Name = "Authorization",
+//         In = ParameterLocation.Header,
+//         Type = SecuritySchemeType.Http,
+//         Scheme = JwtBearerDefaults.AuthenticationScheme,
+//         Description = "Enter your valid token to be Authenticated.",
+//         Reference = new OpenApiReference
+//         {
+//             Id = JwtBearerDefaults.AuthenticationScheme,
+//             Type = ReferenceType.SecurityScheme
+//         }
+//     };
 
-    options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+//     options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { jwtSecurityScheme, Array.Empty<string>() }
-    });
+//     options.AddSecurityRequirement(new OpenApiSecurityRequirement
+//     {
+//         { jwtSecurityScheme, Array.Empty<string>() }
+//     });
 
-    options.SchemaFilter<EnumSchemaFilter>();
-    options.EnableAnnotations();
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
-    {
-        options.IncludeXmlComments(xmlPath);
-    }
-    else
-    {
-        Console.WriteLine($"Warning: XML documentation file not found at {xmlPath}");
-    }
-});
+//     options.SchemaFilter<EnumSchemaFilter>();
+//     options.EnableAnnotations();
+//     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+//     if (File.Exists(xmlPath))
+//     {
+//         options.IncludeXmlComments(xmlPath);
+//     }
+//     else
+//     {
+//         Console.WriteLine($"Warning: XML documentation file not found at {xmlPath}");
+//     }
+// });
 
 // Database and Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Remote")));
+
+// Add DbContext factory for background services
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Remote")));
 
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders().AddUserStore<UserStore<User, Role, ApplicationDbContext, Guid>>()
@@ -166,6 +174,34 @@ builder.Services.AddScoped<ITwoFactorAuthService, TwoFactorAuthService>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
 builder.Services.AddScoped<IAccountSettingsService, AccountSettingsService>();
 
+// Idempotency service
+builder.Services.AddScoped<Application.Interfaces.IIdempotencyService, Application.Services.IdempotencyService>();
+
+// Payment provider implementations and factory
+builder.Services.AddScoped<Application.Services.Payments.PaystackPaymentProvider>();
+builder.Services.AddScoped<Application.Services.Payments.FlutterwavePaymentProvider>();
+builder.Services.AddScoped<Application.Services.Payments.RemitaPaymentProvider>();
+builder.Services.AddScoped<Application.Services.Payments.PaymentProviderFactory>();
+
+// Payment orchestration service
+builder.Services.AddScoped<Application.Services.Payments.PaymentOrchestrationService>();
+
+// Reconciliation service
+builder.Services.AddScoped<Application.Interfaces.IReconciliationService, Application.Services.ReconciliationService>();
+
+// Secret rotation service
+builder.Services.AddScoped<Application.Interfaces.ISecretRotationService, Application.Services.SecretRotationService>();
+
+// Audit logging service
+builder.Services.AddScoped<Application.Interfaces.IAuditLogService, Application.Services.AuditLogService>();
+
+// Webhook processing service
+builder.Services.AddScoped<Application.Interfaces.IWebhookProcessingService, Application.Services.WebhookProcessingService>();
+
+// Background services
+builder.Services.AddHostedService<Application.Services.ReconciliationBackgroundService>();
+builder.Services.AddHostedService<Application.Services.SecretRotationBackgroundService>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IJwtService, JwtService>();
 
@@ -190,26 +226,8 @@ app.UseSwaggerUI(c =>
 });// Set Swagger UI at the app's root
 
 
-app.UseIpRateLimiting();
 
-app.UseCors("AllowSpecificOrigin");
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
-app.UseIpRateLimiting();
-
-app.UseCors("AllowSpecificOrigin");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
 
 
 app.UseHttpsRedirection();
