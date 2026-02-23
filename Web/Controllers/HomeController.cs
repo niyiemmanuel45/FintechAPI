@@ -13,12 +13,17 @@ public class HomeController : ControllerBase
         _configuration = configuration;
         _contextAccessor = contextAccessor;
     }
-    
     [HttpGet("")]
-    [HttpGet("/")]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public IActionResult RedirectToSwagger()
-    {
-        return Redirect("/swagger");
+     public IActionResult RedirectToSwagger()
+     {
+         var protocol = _contextAccessor.HttpContext.Request.Scheme;
+
+         var host = _contextAccessor.HttpContext.Request.Host.ToString();
+
+         var baseUrl = $"{protocol}://{host}";
+
+         var redirectUrl = $"{baseUrl}/";
+        return Redirect(redirectUrl);
     }
 }

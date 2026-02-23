@@ -24,16 +24,8 @@ public class SecretRotationBackgroundService : BackgroundService
     {
         _logger.LogInformation("Secret Rotation Background Service started");
 
-        // Wait 5 minutes after startup to allow database migrations and app initialization
-        try
-        {
-            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
-        }
-        catch (TaskCanceledException)
-        {
-            _logger.LogInformation("Secret Rotation Background Service cancelled during startup delay");
-            return;
-        }
+        // Wait 1 minute after startup before first check
+        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -42,24 +34,11 @@ public class SecretRotationBackgroundService : BackgroundService
                 await CheckAndRotateSecretsAsync();
                 await Task.Delay(_checkInterval, stoppingToken);
             }
-            catch (TaskCanceledException)
-            {
-                _logger.LogInformation("Secret Rotation Background Service cancelled");
-                break;
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in secret rotation background service");
                 // Wait 1 hour before retrying on error
-                try
-                {
-                    await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
-                }
-                catch (TaskCanceledException)
-                {
-                    _logger.LogInformation("Secret Rotation Background Service cancelled during error delay");
-                    break;
-                }
+                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
             }
         }
 

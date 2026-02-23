@@ -217,10 +217,9 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FintechAPI v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     c.RoutePrefix = "swagger";
-    c.DocumentTitle = "FintechAPI - Payment Orchestration System";
-});
+});// Set Swagger UI at the app's root
 
 
 

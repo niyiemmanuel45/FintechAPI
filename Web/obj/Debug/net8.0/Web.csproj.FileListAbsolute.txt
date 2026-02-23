@@ -316,4 +316,3 @@ C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\ref\
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\obj\Debug\net8.0\swae.build.ex.cache
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\FluentEmail.Core.dll
 C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\FluentEmail.Mailgun.dll
-C:\Users\BOUNDLESS IT\Videos\Fintech\FintechAPI-master\Web\bin\Debug\net8.0\web.config

@@ -23,17 +23,6 @@ public class ReconciliationBackgroundService : BackgroundService
     {
         _logger.LogInformation("Reconciliation Background Service started");
 
-        // Wait 5 minutes after startup to allow database migrations and app initialization
-        try
-        {
-            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
-        }
-        catch (TaskCanceledException)
-        {
-            _logger.LogInformation("Reconciliation Background Service cancelled during startup delay");
-            return;
-        }
-
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -52,24 +41,11 @@ public class ReconciliationBackgroundService : BackgroundService
                     await RunReconciliationAsync();
                 }
             }
-            catch (TaskCanceledException)
-            {
-                _logger.LogInformation("Reconciliation Background Service cancelled");
-                break;
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in reconciliation background service");
                 // Wait 1 hour before retrying on error
-                try
-                {
-                    await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
-                }
-                catch (TaskCanceledException)
-                {
-                    _logger.LogInformation("Reconciliation Background Service cancelled during error delay");
-                    break;
-                }
+                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
             }
         }
 
