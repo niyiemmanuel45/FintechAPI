@@ -5,6 +5,7 @@ using Application.DTOs;
 using Application.DTOs.ResponseDto;
 using Application.Interfaces;
 using Application.Mappers;
+using Application.Services;
 using Application.Validators;
 using Core.Entities;
 using Core.Interfaces;
@@ -54,7 +55,7 @@ public class AccountController : ControllerBase
     }
 
     /// <summary>
-    /// Register a new account. This is the first step to create a user profile.
+    /// Register a new account. A secure password will be auto-generated and sent to your email.
     /// </summary>
     /// <param name="userDto"></param>
     /// <returns></returns>
@@ -96,14 +97,16 @@ public class AccountController : ControllerBase
             return BadRequest(birthDateValidationResult.ErrorMessage);
         }
 
+        // Generate secure password
+        var generatedPassword = PasswordGeneratorService.GenerateSecurePassword(12);
+
         // Convert userDto to user object
         User user = Global.ConvertToUserObject(userDto);
-        {
-            user.UserName = userDto.Email;
-        }
+        user.UserName = userDto.Email;
+        user.EmailConfirmed = true; // Auto-confirm email since we're sending password via email
 
-        // Register User using UserManager
-        var registrationResult = await _userManager.CreateAsync(user, userDto.Password);
+        // Register User using UserManager with generated password
+        var registrationResult = await _userManager.CreateAsync(user, generatedPassword);
         
         if (!registrationResult.Succeeded)
         {
@@ -113,44 +116,36 @@ public class AccountController : ControllerBase
 
         try
         {
-            // Generate email confirmation token
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            
-            // Encode the token for URL safety
-            var encodedToken = HttpUtility.UrlEncode(token);
-            
-            // Create confirmation link
-            var confirmationLink = Url.Action("ConfirmEmail", "Account",
-                new { email = userDto.Email, token = encodedToken }, Request.Scheme);
-            
-            // Build email body
+            // Build welcome email with password
             var userName = $"{user.FirstName} {user.LastName}";
-            var body = _emailBodyBuilder.EmailConfirmationHtmlResponse(
-                "Welcome to FintechAPI - Confirm Your Email", 
+            var body = _emailBodyBuilder.WelcomeWithPasswordHtmlResponse(
                 userName,
-                confirmationLink);
+                userDto.Email,
+                generatedPassword);
             
-            // Send verification email
-            await _emailService.ForceSendEmailAsync(user, "Confirm Your Email Address", body);
+            // Send welcome email with credentials
+            await _emailService.ForceSendEmailAsync(user, "Welcome to FintechAPI - Your Account Credentials", body);
             
             return Ok(new 
             { 
-                Message = "Registration successful! A verification email has been sent to your email address.",
+                Message = "Registration successful! Your login credentials have been sent to your email address.",
                 Email = userDto.Email,
-                Note = "Please check your email and click the confirmation link to activate your account."
+                Note = "Please check your email for your auto-generated password. For security, please change your password after your first login."
             });
         }
         catch (Exception ex)
         {
             // Log the error but don't expose details to the user
-            Console.WriteLine($"Error sending verification email: {ex.Message}");
+            Console.WriteLine($"Error sending welcome email: {ex.Message}");
             
-            // Still return success since user was created
-            return Ok(new 
+            // This is critical - user won't know their password
+            // Delete the user account if email fails
+            await _userManager.DeleteAsync(user);
+            
+            return StatusCode(500, new 
             { 
-                Message = "Registration successful, but there was an issue sending the verification email.",
-                Email = userDto.Email,
-                Note = "Please contact support if you don't receive the verification email."
+                Message = "Registration failed. Unable to send your credentials via email.",
+                Note = "Please try again or contact support if the problem persists."
             });
         }
     }
@@ -387,12 +382,15 @@ public class AccountController : ControllerBase
             var email = verificationDto.EmailAddress.ToLower();
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
             if (user is null) return BadRequest(new { ErrorMessage = "No users found." });
+            
             var userId = user.Id.ToString();
-            var code = _twoFactorAuthService.GetStoredCode(userId);
+            var storedCode = _twoFactorAuthService.GetStoredCode(userId);
 
-            if (code == null)
+            Console.WriteLine($"DEBUG: UserId={userId}, StoredCode={storedCode}, ProvidedCode={verificationDto.Code}");
+
+            if (storedCode == null)
             {
-                return Unauthorized(new { ErrorMessage = "Verification code is invalid." });
+                return Unauthorized(new { ErrorMessage = "Verification code is invalid or has expired." });
             }
 
             if (await _userManager.IsLockedOutAsync(user))
@@ -415,7 +413,9 @@ public class AccountController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest("Email, verification code or both are invalid.");
+            Console.WriteLine($"ERROR in 2FA verification: {e.Message}");
+            Console.WriteLine($"Stack trace: {e.StackTrace}");
+            return BadRequest(new { ErrorMessage = "Email, verification code or both are invalid.", Details = e.Message });
         }
     }
 

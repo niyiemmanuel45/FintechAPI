@@ -19,4 +19,6 @@ public interface IEmailBodyBuilder
     string PasswordResetHtmlResponse(string message, string userEmail, string resetLink);
 
     string SingleMessageHtmlResponse(string mainMessage, string detailedMessage, string userName);
+    
+    string WelcomeWithPasswordHtmlResponse(string userName, string email, string password);
 }

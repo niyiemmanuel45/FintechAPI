@@ -17,7 +17,8 @@ public class Global
             LastName = userDto.LastName,
             DateOfBirth = DateTime.ParseExact(userDto.DateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture), // convert date of birth to DateTime format
             Email = userDto.Email, 
-            PhoneNumber = userDto.PhoneNumber
+            PhoneNumber = userDto.PhoneNumber,
+            Notifications = userDto.Notifications
         };
 
         return user;

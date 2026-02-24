@@ -803,4 +803,138 @@ public class EmailBodyBuilder : IEmailBodyBuilder
 
         return htmlContent;
     }
+
+    public string WelcomeWithPasswordHtmlResponse(string userName, string email, string password)
+    {
+        var htmlContent = $@"
+    <html>
+    <head>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                margin: 0;
+                padding: 0;
+                color: #333;
+            }}
+            .container {{
+                max-width: 600px;
+                margin: 20px auto;
+                background: #ffffff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }}
+            .header {{
+                text-align: center;
+                border-bottom: 2px solid #28a745;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }}
+            .header h1 {{
+                color: #28a745;
+                font-size: 24px;
+                margin: 0;
+            }}
+            .content p {{
+                line-height: 1.6;
+                margin: 10px 0;
+            }}
+            .credentials-box {{
+                background-color: #f8f9fa;
+                border-left: 4px solid #28a745;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }}
+            .credentials-box strong {{
+                color: #28a745;
+            }}
+            .password {{
+                font-size: 1.3em;
+                color: #d9534f;
+                font-weight: bold;
+                font-family: 'Courier New', monospace;
+                background-color: #fff3cd;
+                padding: 10px;
+                border-radius: 4px;
+                display: inline-block;
+                margin: 10px 0;
+            }}
+            .warning {{
+                background-color: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 10px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }}
+            .footer {{
+                margin-top: 20px;
+                font-size: 0.9em;
+                color: #666;
+                text-align: center;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
+            }}
+            .button {{
+                display: inline-block;
+                margin: 20px 0;
+                padding: 12px 30px;
+                font-size: 1.1em;
+                color: #fff;
+                background-color: #28a745;
+                text-decoration: none;
+                border-radius: 4px;
+            }}
+            .button:hover {{
+                background-color: #218838;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>Welcome to FintechAPI!</h1>
+            </div>
+            <div class='content'>
+                <p>Dear <strong>{userName}</strong>,</p>
+                <p>Your account has been successfully created! We've generated a secure password for you to ensure maximum security.</p>
+                
+                <div class='credentials-box'>
+                    <p><strong>Your Login Credentials:</strong></p>
+                    <p><strong>Email:</strong> {email}</p>
+                    <p><strong>Password:</strong></p>
+                    <div class='password'>{password}</div>
+                </div>
+                
+                <div class='warning'>
+                    <p><strong>⚠️ Important Security Notice:</strong></p>
+                    <ul>
+                        <li>Please change your password after your first login</li>
+                        <li>Do not share your password with anyone</li>
+                        <li>Store this email securely or save your password in a password manager</li>
+                        <li>Delete this email after saving your password</li>
+                    </ul>
+                </div>
+                
+                <p>You can now log in to your account using the credentials above. For security reasons, you'll also receive a 2FA code via email each time you log in.</p>
+                
+                <p><strong>Next Steps:</strong></p>
+                <ol>
+                    <li>Log in using your email and the password above</li>
+                    <li>Enter the 2FA code sent to your email</li>
+                    <li>Change your password in Account Settings</li>
+                    <li>Start using FintechAPI services</li>
+                </ol>
+            </div>
+            <div class='footer'>
+                <p>Thank you for choosing FintechAPI!</p>
+                <p>If you didn't create this account, please contact our support team immediately.</p>
+            </div>
+        </div>
+    </body>
+    </html>";
+
+        return htmlContent;
+    }
 }

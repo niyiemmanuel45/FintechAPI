@@ -26,7 +26,8 @@ public class JwtService : IJwtService
         }
 
         var expirationMinutes = Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]);
-        var expirationTime = DateTime.UtcNow.AddMinutes(expirationMinutes);
+        var notBefore = DateTime.UtcNow;
+        var expirationTime = notBefore.AddMinutes(expirationMinutes);
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:KEY"]));
 
         // Claims section
@@ -45,6 +46,7 @@ public class JwtService : IJwtService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
+            NotBefore = notBefore,
             Expires = expirationTime,
             SigningCredentials = signingCredentials,
             Issuer = _configuration["Jwt:ISSUER"],
